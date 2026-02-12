@@ -31,8 +31,26 @@ body{
   position: relative;
 }
 
+/* Hidden helper for switching views */
+.hidden{ display:none !important; opacity:0; pointer-events:none; }
+
+/* Intro screen with gift box */
+.intro-screen{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background: linear-gradient(180deg, rgba(255,246,220,0.95), rgba(255,244,230,0.9)); z-index:60; }
+.intro-inner{ text-align:center; }
+.intro-text{ font-size:1.25rem; color:var(--muted); margin-bottom:1rem; }
+.gift-box-container{ position:relative; cursor:pointer; display:inline-block; transition:transform .18s ease; }
+.gift-box-container:hover{ transform:translateY(-6px); }
+.gift-box{ width:140px; height:140px; position:relative; }
+.box{ width:100%; height:100%; background:linear-gradient(180deg,var(--accent-2),var(--accent)); border-radius:10px; position:absolute; bottom:0; box-shadow: 0 10px 26px rgba(170,110,10,0.08); }
+.box .ribbon{ position:absolute; left:50%; top:0; transform:translateX(-50%); width:20px; height:100%; background:rgba(255,255,255,0.9); border-radius:4px; }
+.lid{ width:150px; height:40px; background:linear-gradient(180deg,var(--accent),var(--accent-2)); position:absolute; top:-14px; left:-5px; border-radius:6px; box-shadow:0 6px 20px rgba(170,110,10,0.08); transition:transform .5s ease; z-index:3; }
+.lid .ribbon{ position:absolute; left:50%; top:0; transform:translateX(-50%); width:22px; height:100%; background:rgba(255,255,255,0.95); border-radius:4px; }
+.shadow{ content:''; position:absolute; left:50%; bottom:-12px; transform:translateX(-50%); width:140px; height:18px; background:rgba(0,0,0,0.12); border-radius:50%; filter:blur(6px); }
+.click-instruction{ margin-top:12px; color:var(--muted); font-size:0.95rem; }
+
+
 .card-top{ height:70px; background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent); display:flex; align-items:center; justify-content:center; }
-.bunting{ width:100%; height:24px; background-image: linear-gradient(90deg, transparent 10%, rgba(255,191,0,0.10) 10% 20%); }
+.bunting{ width:100%; height:24px; background-image: linear-gradient(90deg, transparent 10%, rgba(255,191,0,0.10) 10% 20%); transform-origin:center; animation: bunting-sway 6s ease-in-out infinite; }
 
 .card-main{ padding: 36px 48px 28px; text-align:center; position:relative; }
 .invite-note{ letter-spacing:6px; color:var(--muted); font-size:12px; margin-bottom:18px; }
@@ -60,9 +78,31 @@ body{
 
 /* Decorative balloons (simple CSS shapes) */
 .card-main::before, .card-main::after{
-  content:""; position:absolute; width:120px; height:160px; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.8), rgba(0,0,0,0.02)); border-radius:50% 50% 50% 50%; opacity:0.35; top:8%; }
-.card-main::before{ left:6%; transform: rotate(-10deg); background: linear-gradient(180deg,#bfeff6,#dff9fb); }
-.card-main::after{ right:6%; transform: rotate(10deg); background: linear-gradient(180deg,#bfeff6,#dff9fb); }
+  content:""; position:absolute; width:120px; height:160px; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9), rgba(0,0,0,0.02)); border-radius:50% 50% 50% 50%; opacity:0.35; top:8%; }
+.card-main::before{ left:6%; transform: rotate(-10deg); background: linear-gradient(180deg,#fff3d6,#ffeecf); animation: balloon-float 5s ease-in-out infinite; }
+.card-main::after{ right:6%; transform: rotate(10deg); background: linear-gradient(180deg,#fff3d6,#ffeecf); animation: balloon-float 6s ease-in-out infinite; }
+
+/* Animations */
+@keyframes bunting-sway{ 0%{ transform: translateY(0) rotate(0deg);} 50%{ transform: translateY(-4px) rotate(-1deg);} 100%{ transform: translateY(0) rotate(0deg);} }
+@keyframes balloon-float{ 0%{ transform: translateY(0) rotate(0deg); opacity:.35 } 50%{ transform: translateY(-8px) rotate(3deg); opacity:.45 } 100%{ transform: translateY(0) rotate(0deg); opacity:.35 } }
+
+/* gentle shadow pulse for gift */
+.gift-box .box{ transition:transform .45s ease, box-shadow .45s ease; }
+.gift-box.open .box{ transform: translateY(6px); box-shadow: 0 20px 40px rgba(255,191,0,0.14); }
+.gift-box.open ~ .shadow{ transform: scale(1.08); opacity:0.9; }
+
+/* invitation reveal */
+.invitation-card{ transform-origin: center; }
+.invitation-card.opened{ animation: invite-reveal .6s cubic-bezier(.2,.9,.2,1) both; }
+@keyframes invite-reveal{ 0%{ transform: scale(.96) translateY(8px); opacity:0; filter: blur(2px);} 100%{ transform: scale(1) translateY(0); opacity:1; filter: blur(0);} }
+
+/* wishes fade-up */
+.wishes{ opacity:0; transform: translateY(6px); transition: opacity .6s ease, transform .6s ease; }
+.invitation-card.opened .wishes{ opacity:1; transform: translateY(0); }
+
+/* When gift is opened, animate lid lifted (we toggle via JS: add .open to .gift-box) */
+.gift-box.open .lid{ transform: translateY(-28px) rotate(-8deg); }
+
 
 /* Responsive */
 @media (max-width:600px){
